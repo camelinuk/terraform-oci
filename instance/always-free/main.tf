@@ -293,19 +293,19 @@ resource "oci_load_balancer_rule_set" "test_rule_set" {
 }
 
 resource "tls_private_key" "example" {
-  algorithm   = "ECDSA"
+ algorithm   = "ECDSA"
   ecdsa_curve = "P384"
 }
 
 resource "tls_self_signed_cert" "example" {
-  key_algorithm   = "ECDSA"
+#  key_algorithm   = "ECDSA"
   private_key_pem = tls_private_key.example.private_key_pem
 
   subject {
-    organization = "Oracle"
-    country = "US"
-    locality = "Austin"
-    province = "TX"
+    organization = "LEMONCX"
+    country = "TW"
+    locality = "Taiwan"
+    province = "TPE"
   }
 
   validity_period_hours = 8760 # 1 year
