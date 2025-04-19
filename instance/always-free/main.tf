@@ -364,8 +364,8 @@ data "oci_core_vnic" "app_vnic" {
 data "oci_core_images" "test_images" {
   compartment_id           = var.compartment_ocid
   #display_name             = "Ub20Free"
-  operating_system         = "Canonical Ubuntu"
-  operating_system_version = "20.04"
+  operating_system         = "Oracle Linux"
+  operating_system_version = "9"
   shape                    = var.instance_shape
   sort_by                  = "TIMECREATED"
   sort_order               = "DESC"
