@@ -27,7 +27,6 @@ variable "region" {
 }
 
 provider "oci" {
-  name 		   = "LibreNMS"
   region           = var.region
   tenancy_ocid     = var.tenancy_ocid
   user_ocid        = var.user_ocid
@@ -364,8 +363,7 @@ data "oci_core_vnic" "app_vnic" {
 
 # See https://docs.oracle.com/iaas/images/
 data "oci_core_images" "test_images" {
-  compartment_id           = "PMCO"
-  #compartment_id           = var.compartment_ocid
+  compartment_id           = var.compartment_ocid
   display_name		   = "PMCOv1"
   operating_system         = "Oracle Linux"
   operating_system_version = "8"
