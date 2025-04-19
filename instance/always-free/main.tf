@@ -385,11 +385,11 @@ data "oci_database_autonomous_databases" "test_autonomous_databases" {
 
 resource "oci_database_autonomous_database" "test_autonomous_database" {
   #Required
-  admin_password           = "Jamesql##0987$$"
+  admin_password           = "Testalwaysfree1"
   compartment_id           = var.compartment_ocid
   cpu_core_count           = "1"
   data_storage_size_in_tbs = "1"
-  db_name                  = "freeDB"
+  db_name                  = "testadb"
 
   #Optional
   db_workload  = "OLTP"
