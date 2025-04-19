@@ -363,7 +363,7 @@ data "oci_core_vnic" "app_vnic" {
 # See https://docs.oracle.com/iaas/images/
 data "oci_core_images" "test_images" {
   compartment_id           = var.compartment_ocid
-  operating_system         = "AlmaLinux OS 9 (x86_64)"
+  operating_system         = "AlmaLinux"
   operating_system_version = "9.5.20250205"
   shape                    = var.instance_shape
   sort_by                  = "TIMECREATED"
@@ -385,11 +385,11 @@ data "oci_database_autonomous_databases" "test_autonomous_databases" {
 
 resource "oci_database_autonomous_database" "test_autonomous_database" {
   #Required
-  admin_password           = "Testalwaysfree1"
+  admin_password           = "Jamesql##0987$$"
   compartment_id           = var.compartment_ocid
   cpu_core_count           = "1"
   data_storage_size_in_tbs = "1"
-  db_name                  = "testadb"
+  db_name                  = "freeDB"
 
   #Optional
   db_workload  = "OLTP"
