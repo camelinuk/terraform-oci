@@ -363,8 +363,8 @@ data "oci_core_vnic" "app_vnic" {
 # See https://docs.oracle.com/iaas/images/
 data "oci_core_images" "test_images" {
   compartment_id           = var.compartment_ocid
-  display_name             = "Ub20Free"
-  operating_system         = "Ubuntu"
+  #display_name             = "Ub20Free"
+  operating_system         = "Canonical Ubuntu"
   operating_system_version = "20.04"
   shape                    = var.instance_shape
   sort_by                  = "TIMECREATED"
