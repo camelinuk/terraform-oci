@@ -364,7 +364,9 @@ data "oci_core_vnic" "app_vnic" {
 
 # See https://docs.oracle.com/iaas/images/
 data "oci_core_images" "test_images" {
-  compartment_id           = var.compartment_ocid
+  compartment_id           = "PMCO"
+  #compartment_id           = var.compartment_ocid
+  display_name		   = "PMCOv1"
   operating_system         = "Oracle Linux"
   operating_system_version = "8"
 #  operating_system         = "Oracle Linux"
