@@ -9,10 +9,11 @@ variable "user_ocid" {
 }
 
 variable "fingerprint" {
+  default = "dd:46:ba:91:7d:8f:80:56:15:bc:5c:2a:de:01:0b:44"
 }
 
 variable "private_key_path" {
-  default = ""
+  default = "id_rsa"
 }
 
 variable "ssh_public_key" {
