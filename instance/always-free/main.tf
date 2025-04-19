@@ -12,7 +12,7 @@ variable "fingerprint" {
 }
 
 variable "private_key_path" {
-  default = "./keys/id_rsa"
+  default = "./key/id_rsa"
 }
 
 variable "ssh_public_key" {
@@ -20,7 +20,6 @@ variable "ssh_public_key" {
 }
 
 variable "compartment_ocid" {
-  default = "lemoncx"
 }
 
 variable "region" {
@@ -49,46 +48,46 @@ data "oci_identity_availability_domain" "ad" {
 
 /* Network */
 
-resource "oci_core_virtual_network" "free_vcn" {
+resource "oci_core_virtual_network" "test_vcn" {
   cidr_block     = "10.1.0.0/16"
   compartment_id = var.compartment_ocid
-  display_name   = "freeVCN"
-  dns_label      = "freevcn"
+  display_name   = "testVCN"
+  dns_label      = "testvcn"
 }
 
-resource "oci_core_subnet" "free_subnet" {
+resource "oci_core_subnet" "test_subnet" {
   cidr_block        = "10.1.20.0/24"
-  display_name      = "freeSubnet"
-  dns_label         = "freesubnet"
-  security_list_ids = [oci_core_security_list.free_security_list.id]
+  display_name      = "testSubnet"
+  dns_label         = "testsubnet"
+  security_list_ids = [oci_core_security_list.test_security_list.id]
   compartment_id    = var.compartment_ocid
-  vcn_id            = oci_core_virtual_network.free_vcn.id
-  route_table_id    = oci_core_route_table.free_route_table.id
-  dhcp_options_id   = oci_core_virtual_network.free_vcn.default_dhcp_options_id
+  vcn_id            = oci_core_virtual_network.test_vcn.id
+  route_table_id    = oci_core_route_table.test_route_table.id
+  dhcp_options_id   = oci_core_virtual_network.test_vcn.default_dhcp_options_id
 }
 
-resource "oci_core_internet_gateway" "free_internet_gateway" {
+resource "oci_core_internet_gateway" "test_internet_gateway" {
   compartment_id = var.compartment_ocid
-  display_name   = "freeIG"
-  vcn_id         = oci_core_virtual_network.free_vcn.id
+  display_name   = "testIG"
+  vcn_id         = oci_core_virtual_network.test_vcn.id
 }
 
-resource "oci_core_route_table" "free_route_table" {
+resource "oci_core_route_table" "test_route_table" {
   compartment_id = var.compartment_ocid
-  vcn_id         = oci_core_virtual_network.free_vcn.id
-  display_name   = "freeRouteTable"
+  vcn_id         = oci_core_virtual_network.test_vcn.id
+  display_name   = "testRouteTable"
 
   route_rules {
     destination       = "0.0.0.0/0"
     destination_type  = "CIDR_BLOCK"
-    network_entity_id = oci_core_internet_gateway.free_internet_gateway.id
+    network_entity_id = oci_core_internet_gateway.test_internet_gateway.id
   }
 }
 
-resource "oci_core_security_list" "free_security_list" {
+resource "oci_core_security_list" "test_security_list" {
   compartment_id = var.compartment_ocid
-  vcn_id         = oci_core_virtual_network.free_vcn.id
-  display_name   = "freeSecurityList"
+  vcn_id         = oci_core_virtual_network.test_vcn.id
+  display_name   = "testSecurityList"
 
   egress_security_rules {
     protocol    = "6"
@@ -150,7 +149,7 @@ resource "oci_core_instance" "free_instance0" {
   }
 
   create_vnic_details {
-    subnet_id        = oci_core_subnet.free_subnet.id
+    subnet_id        = oci_core_subnet.test_subnet.id
     display_name     = "primaryvnic"
     assign_public_ip = true
     hostname_label   = "freeinstance0"
@@ -158,7 +157,7 @@ resource "oci_core_instance" "free_instance0" {
 
   source_details {
     source_type = "image"
-    source_id   = lookup(data.oci_core_images.free_images.images[0], "id")
+    source_id   = lookup(data.oci_core_images.test_images.images[0], "id")
   }
 
   metadata = {
@@ -178,7 +177,7 @@ resource "oci_core_instance" "free_instance1" {
   }
 
   create_vnic_details {
-    subnet_id        = oci_core_subnet.free_subnet.id
+    subnet_id        = oci_core_subnet.test_subnet.id
     display_name     = "primaryvnic"
     assign_public_ip = true
     hostname_label   = "freeinstance1"
@@ -186,7 +185,7 @@ resource "oci_core_instance" "free_instance1" {
 
   source_details {
     source_type = "image"
-    source_id   = lookup(data.oci_core_images.free_images.images[0], "id")
+    source_id   = lookup(data.oci_core_images.test_images.images[0], "id")
   }
 
   metadata = {
@@ -217,12 +216,12 @@ resource "oci_load_balancer_load_balancer" "free_load_balancer" {
   }
 
   subnet_ids = [
-    oci_core_subnet.free_subnet.id,
+    oci_core_subnet.test_subnet.id,
   ]
 }
 
 resource "oci_load_balancer_backend_set" "free_load_balancer_backend_set" {
-  name             = "lbBackendSetLemoncx"
+  name             = "lbBackendSet1"
   load_balancer_id = oci_load_balancer_load_balancer.free_load_balancer.id
   policy           = "ROUND_ROBIN"
 
@@ -239,7 +238,7 @@ resource "oci_load_balancer_backend_set" "free_load_balancer_backend_set" {
   }
 }
 
-resource "oci_load_balancer_backend" "free_load_balancer_free_backend0" {
+resource "oci_load_balancer_backend" "free_load_balancer_test_backend0" {
   #Required
   backendset_name  = oci_load_balancer_backend_set.free_load_balancer_backend_set.name
   ip_address       = oci_core_instance.free_instance0.public_ip
@@ -247,7 +246,7 @@ resource "oci_load_balancer_backend" "free_load_balancer_free_backend0" {
   port             = "80"
 }
 
-resource "oci_load_balancer_backend" "free_load_balancer_free_backend1" {
+resource "oci_load_balancer_backend" "free_load_balancer_test_backend1" {
   #Required
   backendset_name  = oci_load_balancer_backend_set.free_load_balancer_backend_set.name
   ip_address       = oci_core_instance.free_instance1.public_ip
@@ -255,28 +254,28 @@ resource "oci_load_balancer_backend" "free_load_balancer_free_backend1" {
   port             = "80"
 }
 
-resource "oci_load_balancer_hostname" "free_hostname1" {
+resource "oci_load_balancer_hostname" "test_hostname1" {
   #Required
-  hostname         = "free.lemon.cx"
+  hostname         = "app.free.com"
   load_balancer_id = oci_load_balancer_load_balancer.free_load_balancer.id
-  name             = "free1"
+  name             = "hostname1"
 }
 
 resource "oci_load_balancer_listener" "load_balancer_listener0" {
   load_balancer_id         = oci_load_balancer_load_balancer.free_load_balancer.id
   name                     = "http"
   default_backend_set_name = oci_load_balancer_backend_set.free_load_balancer_backend_set.name
-  hostname_names           = [oci_load_balancer_hostname.free_hostname1.name]
+  hostname_names           = [oci_load_balancer_hostname.test_hostname1.name]
   port                     = 80
   protocol                 = "HTTP"
-  rule_set_names           = [oci_load_balancer_rule_set.free_rule_set.name]
+  rule_set_names           = [oci_load_balancer_rule_set.test_rule_set.name]
 
   connection_configuration {
     idle_timeout_in_seconds = "240"
   }
 }
 
-resource "oci_load_balancer_rule_set" "free_rule_set" {
+resource "oci_load_balancer_rule_set" "test_rule_set" {
   items {
     action = "ADD_HTTP_REQUEST_HEADER"
     header = "example_header_name"
@@ -290,23 +289,23 @@ resource "oci_load_balancer_rule_set" "free_rule_set" {
   }
 
   load_balancer_id = oci_load_balancer_load_balancer.free_load_balancer.id
-  name             = "free_rule_set_name"
+  name             = "test_rule_set_name"
 }
 
-resource "tls_private_key" "lemoncx" {
+resource "tls_private_key" "example" {
   algorithm   = "ECDSA"
   ecdsa_curve = "P384"
 }
 
-resource "tls_self_signed_cert" "lemoncx" {
+resource "tls_self_signed_cert" "example" {
   key_algorithm   = "ECDSA"
-  private_key_pem = tls_private_key.lemoncx.private_key_pem
+  private_key_pem = tls_private_key.example.private_key_pem
 
   subject {
-    organization = "LEMONCX"
-    country = "TW"
-    locality = "Taipei"
-    province = "TPE"
+    organization = "Oracle"
+    country = "US"
+    locality = "Austin"
+    province = "TX"
   }
 
   validity_period_hours = 8760 # 1 year
@@ -324,10 +323,10 @@ resource "tls_self_signed_cert" "lemoncx" {
 
 resource "oci_load_balancer_certificate" "load_balancer_certificate" {
   load_balancer_id   = oci_load_balancer_load_balancer.free_load_balancer.id
-  ca_certificate     = tls_self_signed_cert.lemoncx.cert_pem
+  ca_certificate     = tls_self_signed_cert.example.cert_pem
   certificate_name   = "certificate1"
-  private_key        = tls_private_key.lemoncx.private_key_pem
-  public_certificate = tls_self_signed_cert.lemoncx.cert_pem
+  private_key        = tls_private_key.example.private_key_pem
+  public_certificate = tls_self_signed_cert.example.cert_pem
 
   lifecycle {
     create_before_destroy = true
@@ -362,10 +361,10 @@ data "oci_core_vnic" "app_vnic" {
 }
 
 # See https://docs.oracle.com/iaas/images/
-data "oci_core_images" "free_images" {
+data "oci_core_images" "test_images" {
   compartment_id           = var.compartment_ocid
-  operating_system         = "AlmaLinux OS 9 (x86_64)"
-  operating_system_version = "9"
+  operating_system         = "Oracle Linux"
+  operating_system_version = "8"
   shape                    = var.instance_shape
   sort_by                  = "TIMECREATED"
   sort_order               = "DESC"
@@ -375,7 +374,7 @@ output "app" {
   value = "http://${data.oci_core_vnic.app_vnic.public_ip_address}"
 }
 
-data "oci_database_autonomous_databases" "free_autonomous_databases" {
+data "oci_database_autonomous_databases" "test_autonomous_databases" {
   #Required
   compartment_id = var.compartment_ocid
 
@@ -384,17 +383,17 @@ data "oci_database_autonomous_databases" "free_autonomous_databases" {
   is_free_tier = "true"
 }
 
-resource "oci_database_autonomous_database" "free_autonomous_database" {
+resource "oci_database_autonomous_database" "test_autonomous_database" {
   #Required
-  admin_password           = "Jamesql##0987$$"
+  admin_password           = "Testalwaysfree1"
   compartment_id           = var.compartment_ocid
   cpu_core_count           = "1"
   data_storage_size_in_tbs = "1"
-  db_name                  = "freeDB"
+  db_name                  = "testadb"
 
   #Optional
   db_workload  = "OLTP"
-  display_name = "free_autonomous_database"
+  display_name = "test_autonomous_database"
 
   freeform_tags = {
     "Department" = "Finance"
