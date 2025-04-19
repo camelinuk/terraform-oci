@@ -363,8 +363,9 @@ data "oci_core_vnic" "app_vnic" {
 # See https://docs.oracle.com/iaas/images/
 data "oci_core_images" "test_images" {
   compartment_id           = var.compartment_ocid
-  operating_system         = "AlmaLinux"
-  operating_system_version = "9.5.20250205"
+  display_name             = "Ub20Free"
+  operating_system         = "Ubuntu"
+  operating_system_version = "20.04"
   shape                    = var.instance_shape
   sort_by                  = "TIMECREATED"
   sort_order               = "DESC"
